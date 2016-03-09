@@ -13,8 +13,11 @@
     "jade": "~1.11.0",
     "jquery": "^2.2.1",
     "jsdom": "^8.1.0",
+    "mongodb": "^2.1.7",
+    "mongoose": "^4.4.6",
     "morgan": "~1.6.1",
     "node-schedule": "^1.0.0",
+    "ntwitter": "^0.5.0",
     "serve-favicon": "~2.3.0"
   }
 }
