@@ -11,16 +11,18 @@ var schedule = require('node-schedule');
 //jquery need jsdom for html parsing
 var jsdom = require('jsdom');
 var $ = require('jquery')(jsdom.jsdom().defaultView);
+var News = require('./models/News.js');
+var utils = require('../util/utils.js');
 
 var results = [];
 var waiter;
 var trytimes = 20;
+var curLocDate;
 
 function getTopNewsOfYesterday() {
-	var curLocDate = new Date();
-	curLocDate.setDate(curLocDate.getDate() - 2);
+	curLocDate = utils.yesterday();
 	trytimes--;
-	var formatDate = '(' + curLocDate.getDate() + ' ' + getMonthName(curLocDate.getMonth()) + ' ' + curLocDate.getFullYear() + ')';
+	var formatDate = '(' + curLocDate.getDate() + ' ' + utils.getMonthName(curLocDate.getMonth()) + ' ' + curLocDate.getFullYear() + ')';
 	
 	var options = {
 		hostname: 'www.navy.mil',
@@ -57,14 +59,16 @@ function getTopNewsOfYesterday() {
 				$(body).find('div[style="width:950px; margin: 10px 25px;"]').each(function($this) {
 					var title = $($(this).children('div')[0]).text();
 					if(re.test(title)) {
-						results.push($(this).html());
+						var a = $(this).find('a')[0];
+						var href = $(a).attr('href');
+						$(a).attr('href', 'http://www.navy.mil' + href);
+						results.push($(this).html().replace(/\n\t/g, ''));
 					}
 				});
 				
 				console.log('Completed grabbing top news on ' + formatDate);
-				postResult(results);
+				saveResult(results);
 				results = [];
-				console.log(results);
 			}
 		});
 		
@@ -77,24 +81,19 @@ function getTopNewsOfYesterday() {
 }
 
 function startJob() {
-	// schedule this job at 9:00AM for everyday, '0 9 * * *' is crontab format.
-	schedule.scheduleJob('0 9 * * *', getTopNewsOfYesterday);
+	// schedule this job at 8:00AM for everyday, '0 8 * * *' is crontab format.
+	schedule.scheduleJob('0 8 * * *', getTopNewsOfYesterday);
 }
 
 /**
  *  This function will post the retrived data to WeChat.
  */
-function postResult(data) {
-	console.log(data);
-}
-
-/**
- *  get the Month name by its number
- */
-function getMonthName(i) {
-	var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-	
-	return months[i];
+function saveResult(data) {
+	var sd = curLocDate.getFullYear() + '-' + (curLocDate.getMonth() + 1) + '-' + curLocDate.getDate();
+	News.save({pubdate: sd, content: data}, function(err) {
+		if(err)
+			console.error('Failed to save News:' + err);
+	});
 }
 
 // the following line is for test intention.
