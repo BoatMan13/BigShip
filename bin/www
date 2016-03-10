@@ -8,6 +8,15 @@ var app = require('../app');
 var debug = require('debug')('bigship:server');
 var http = require('http');
 
+var news = require('../navy.mil/news.js');
+var twitter = require('../navy.mil/twitter.js');
+
+/**
+ * Start the backgroud jobs of news and twitter
+ */
+news.startJob();
+twitter.startJob();
+
 /**
  * Get port from environment and store in Express.
  */
