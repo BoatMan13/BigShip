@@ -10,7 +10,8 @@ var Schema = db.mongoose.Schema;
 
 var NewsSchema = new Schema({
 	pubdate: String,
-	content: String
+	content: [String],
+	adddate: Date
 });
 
 var News = db.mongoose.model('News', NewsSchema);
@@ -30,7 +31,7 @@ NewsDAO.prototype.findByDate = function(date, callback) {
 }
 
 NewsDAO.prototype.findFirst = function(callback) {
-	News.findOne({}, function(err, obj) {
+	News.findOne({}, null, {sort: {adddate: -1}}, function(err, obj) {
 		callback(err, obj);
 	});
 }
