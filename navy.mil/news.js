@@ -90,7 +90,7 @@ function startJob() {
  */
 function saveResult(data) {
 	var sd = curLocDate.getFullYear() + '-' + (curLocDate.getMonth() + 1) + '-' + curLocDate.getDate();
-	News.save({pubdate: sd, content: data}, function(err) {
+	News.save({pubdate: sd, content: data, adddate: Date()}, function(err) {
 		if(err)
 			console.error('Failed to save News:' + err);
 	});
@@ -98,5 +98,6 @@ function saveResult(data) {
 
 // the following line is for test intention.
 //startJob();
+// getTopNewsOfYesterday();
 
 module.exports.startJob = startJob;
