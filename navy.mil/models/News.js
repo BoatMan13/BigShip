@@ -29,4 +29,10 @@ NewsDAO.prototype.findByDate = function(date, callback) {
 	});
 }
 
+NewsDAO.prototype.findFirst = function(callback) {
+	News.findOne({}, function(err, obj) {
+		callback(err, obj);
+	});
+}
+
 module.exports = new NewsDAO();
