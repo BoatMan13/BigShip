@@ -71,7 +71,7 @@ function saveResult(d) {
 		}
 		
 		last_id = d[0].id;
-		Tweet.save({pubdate: pd, content: results, last_id: last_id}, function(err) {
+		Tweet.save({pubdate: pd, content: results, last_id: last_id, adddate: Date()}, function(err) {
 			if(err)
 				console.error('Failed to save Tweet:' + err);
 		});
