@@ -10,8 +10,9 @@ var Schema = db.mongoose.Schema;
 
 var TweetSchema = new Schema({
 	pubdate: String,
-	content: String,
-	last_id: Number
+	content: [String],
+	last_id: Number,
+	adddate: Date
 });
 
 var Tweet = db.mongoose.model('Tweet', TweetSchema);
@@ -31,7 +32,7 @@ TweetDAO.prototype.findByDate = function(date, callback) {
 }
 
 TweetDAO.prototype.findFirst = function(callback) {
-	Tweet.findOne({}, function(err, obj) {
+	Tweet.findOne({}, null, {sort: {adddate: -1}}, function(err, obj) {
 		callback(err, obj);
 	});
 }
